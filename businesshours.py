@@ -196,7 +196,6 @@ def daily_range(hour_range):
 
     >>> daily_range(("09:00","10:00"))
     [(datetime.datetime(2000, 1, 15, 9, 0), datetime.datetime(2000, 1, 15, 10, 0)), (datetime.datetime(2000, 1, 16, 9, 0), datetime.datetime(2000, 1, 16, 10, 0)), (datetime.datetime(2000, 1, 17, 9, 0), datetime.datetime(2000, 1, 17, 10, 0)), (datetime.datetime(2000, 1, 18, 9, 0), datetime.datetime(2000, 1, 18, 10, 0)), (datetime.datetime(2000, 1, 19, 9, 0), datetime.datetime(2000, 1, 19, 10, 0)), (datetime.datetime(2000, 1, 20, 9, 0), datetime.datetime(2000, 1, 20, 10, 0)), (datetime.datetime(2000, 1, 21, 9, 0), datetime.datetime(2000, 1, 21, 10, 0))]
-
     """
 
     result = []
@@ -208,7 +207,6 @@ def daily_range(hour_range):
         result.append((d1,d2))
 
     return result
-
 
 def businesshours(H, ranges):
     """ given a series of event H and a list of pairs of ranges, return a list
@@ -222,21 +220,27 @@ def businesshours(H, ranges):
     >>> H = [ ["mon_1_open", "09:00"], ["mon_1_close", "22:00"], ["tue_1_open", "09:00"], ["tue_1_close", "22:00"] ]
     >>> ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
     >>> businesshours(H,ranges)
-    [True,True,True]
+    [True, True, True]
+
+    # real world example, opened in the first and second range
+    >>> H = [ ["mon_1_open", "09:00"], ["mon_1_close", "22:00"], ["tue_1_open", "09:00"], ["tue_1_close", "22:00"] ]
+    >>> ranges = [("08:00","10:00"),("11:30","12:30"),("17:00","22:01")]
+    >>> businesshours(H,ranges)
+    [False, True, False]
 
     """
 
     # Convert H into something I can work with
     transformed = [transform(e) for e in H]
+    full_period = periodize(transformed)
 
     result = []
     for r in ranges:
-        print(r)
+        daily_ranges = daily_range(r)
+        openings = [opened_range(full_period,d1,d2) for d1,d2 in daily_ranges]
+        result.append(any(openings))
 
-
-    return None
-
-
+    return result
 
 if __name__ == '__main__':
     main()
