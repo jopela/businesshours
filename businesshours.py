@@ -6,6 +6,16 @@ from datetime import datetime, timedelta
 # globals
 REF_YEAR = 2000
 REF_MONTH = 1
+WEEKDAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+WEEKDAY_TO_NUM = {
+                    "mon":15,
+                    "tue":16,
+                    "wed":17,
+                    "thu":18,
+                    "fri":19,
+                    "sat":20,
+                    "sun":21
+                 }
 
 def main():
 
@@ -68,22 +78,13 @@ def transform(elem):
     (datetime.datetime(2000, 1, 15, 9, 0), 'open')
 
     """
-    weekday_to_num = {
-            "mon":15,
-            "tue":16,
-            "wed":17,
-            "thu":18,
-            "fri":19,
-            "sat":20,
-            "sun":21
-            }
 
     event = elem[0]
     full_hour = elem[1]
 
     event_components = event.split("_")
     weekday = event_components[0]
-    day = weekday_to_num[weekday]
+    day = WEEKDAY_TO_NUM[weekday]
     state = event_components[-1]
 
     hour_component = full_hour.split(":")
@@ -107,10 +108,19 @@ def immediately_prior(H,d):
     >>> H = [(datetime(2000, 1, 8, 9, 0), 'open'), (datetime(2000, 1, 15, 9, 0), 'open'), (datetime(2000, 1, 22, 9, 0), 'open')]
     >>> d = datetime(2000,1,15,8,0)
     >>> immediately_prior(H,d)
-    (datetime.datetime(2000,1,8,9,0), 'open')
+    (datetime.datetime(2000, 1, 8, 9, 0), 'open')
     """
 
-    return (datetime(1999,1,1,1,1),'open')
+    # take all the previous events
+    # sort them
+    # take the last element from the list.
+    # NOTE: list is guaranteed to have lenght of at least 1.
+
+    previous = [ e for e in H if e[0] <= d ]
+    previous.sort()
+    result = previous[-1]
+
+    return result
 
 def event_between(H, d1, d2):
     """
@@ -123,9 +133,11 @@ def event_between(H, d1, d2):
     >>> d1 = datetime(2000,1,14,9,0)
     >>> d2 = datetime(2000,1,16,9,0)
     >>> event_between(H,d1,d2)
-    [datetime.datetime(2000,1,15,9,0)]
+    [(datetime.datetime(2000, 1, 15, 9, 0), 'open')]
     """
-    return []
+
+    result = [e for e in H if e[0] >= d1 and e[0] < d2]
+    return result
 
 
 def opened_range(H,d1,d2):
@@ -149,6 +161,7 @@ def opened_range(H,d1,d2):
     >>> d2 = datetime(2000,1,15,22,0)
     >>> opened_range(h,d1,d2)
     False
+
     """
 
     prior = immediately_prior(H,d1)
@@ -157,6 +170,59 @@ def opened_range(H,d1,d2):
 
     result = prior[1] == 'open' and len(close_events_in) == 0
     return result
+
+def hourmin(hour_s):
+    """
+    EXAMPLE
+    =======
+
+    >>> hourmin("09:48")
+    (9, 48)
+    """
+
+    hour_comp = hour_s.split(":")
+    hour = int(hour_comp[0])
+    minutes = int(hour_comp[1])
+    result = (hour,minutes)
+    return result
+
+def daily_range(hour_range):
+    """
+    takes a range containing hours (e.g ("09:00","10:00")) and transform it
+    into a list of daily datetime ranges.
+    """
+
+    return
+
+
+
+def businesshours(H, ranges):
+    """ given a series of event H and a list of pairs of ranges, return a list
+    of bool that indicates if the commerce is opened in the given range for
+    at least one day of the week.
+
+    EXAMPLE
+    =======
+
+    # real world example, opened in all ranges.
+    >>> H = [ ["mon_1_open", "09:00"], ["mon_1_close", "22:00"], ["tue_1_open", "09:00"], ["tue_1_close", "22:00"] ]
+    >>> ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
+    >>> businesshours(H,ranges)
+    [True,True,True]
+
+    """
+
+    # Convert H into something I can work with
+    transformed = [transform(e) for e in H]
+
+    result = []
+    for r in ranges:
+        print(r)
+
+
+    return None
+
+
 
 if __name__ == '__main__':
     main()
