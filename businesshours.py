@@ -190,10 +190,24 @@ def daily_range(hour_range):
     """
     takes a range containing hours (e.g ("09:00","10:00")) and transform it
     into a list of daily datetime ranges.
+
+    EXAMPLE
+    =======
+
+    >>> daily_range(("09:00","10:00"))
+    [(datetime.datetime(2000, 1, 15, 9, 0), datetime.datetime(2000, 1, 15, 10, 0)), (datetime.datetime(2000, 1, 16, 9, 0), datetime.datetime(2000, 1, 16, 10, 0)), (datetime.datetime(2000, 1, 17, 9, 0), datetime.datetime(2000, 1, 17, 10, 0)), (datetime.datetime(2000, 1, 18, 9, 0), datetime.datetime(2000, 1, 18, 10, 0)), (datetime.datetime(2000, 1, 19, 9, 0), datetime.datetime(2000, 1, 19, 10, 0)), (datetime.datetime(2000, 1, 20, 9, 0), datetime.datetime(2000, 1, 20, 10, 0)), (datetime.datetime(2000, 1, 21, 9, 0), datetime.datetime(2000, 1, 21, 10, 0))]
+
     """
 
-    return
+    result = []
+    for day in WEEKDAYS:
+        hour1,min1 = hourmin(hour_range[0])
+        hour2,min2 = hourmin(hour_range[1])
+        d1 = datetime(REF_YEAR, REF_MONTH, WEEKDAY_TO_NUM[day], hour1, min1)
+        d2 = datetime(REF_YEAR, REF_MONTH, WEEKDAY_TO_NUM[day], hour2, min2)
+        result.append((d1,d2))
 
+    return result
 
 
 def businesshours(H, ranges):
