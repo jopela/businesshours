@@ -216,17 +216,31 @@ def businesshours(H, ranges):
     EXAMPLE
     =======
 
-    # real world example, opened in all ranges.
+    # simple example, opened in all ranges.
     >>> H = [ ["mon_1_open", "09:00"], ["mon_1_close", "22:00"], ["tue_1_open", "09:00"], ["tue_1_close", "22:00"] ]
     >>> ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
     >>> businesshours(H,ranges)
     [True, True, True]
 
-    # real world example, opened in the first and second range
+    # simple example, opened in the first and second range
     >>> H = [ ["mon_1_open", "09:00"], ["mon_1_close", "22:00"], ["tue_1_open", "09:00"], ["tue_1_close", "22:00"] ]
     >>> ranges = [("08:00","10:00"),("11:30","12:30"),("17:00","22:01")]
     >>> businesshours(H,ranges)
     [False, True, False]
+
+    # real worl example, cafe pamplona (ranges correspond to breakfast, dinner, supper).
+    >>> H = [["mon_1_open", "11:00"], ["mon_1_close", "00:00"], ["tue_1_open", "11:00"], ["tue_1_close", "00:00"], ["wed_1_open", "11:00"], ["wed_1_close", "00:00"], ["thu_1_open", "11:00"], ["thu_1_close", "00:00"], ["fri_1_open", "11:00"], ["fri_1_close", "00:00"], ["sat_1_open", "11:00"], ["sat_1_close", "00:00"], ["sun_1_open", "11:00"], ["sun_1_close", "00:00"]]
+    >>> ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
+    >>> businesshours(H,ranges)
+    [False, True, True]
+
+    # real world example, miller ale house (ranges correspond to breakfast, dinner, supper).
+    >>> H = [["mon_1_open", "11:00"], ["mon_1_close", "01:00"], ["tue_1_open", "11:00"], ["tue_1_close", "01:00"], ["wed_1_open", "11:00"], ["wed_1_close", "01:00"], ["thu_1_open", "11:00"], ["thu_1_close", "01:00"], ["fri_1_open", "11:00"], ["fri_1_close", "01:00"], ["sat_1_open", "11:00"], ["sat_1_close", "01:00"], ["sun_1_open", "12:00"], ["sun_1_close", "00:00"]]
+    >>> ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
+    >>> businesshours(H,ranges)
+    [False, True, True]
+
+
 
     """
 
