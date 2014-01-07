@@ -44,7 +44,8 @@ def main():
     # but the only user are trusted.
     hours = eval(args.hours)
     result = restaurant_opening(hours)
-    print(result)
+    result_s = repr(result).lower()
+    print(result_s)
     return
 
 def periodize(events, P = timedelta(days=7)):
