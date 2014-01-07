@@ -263,6 +263,15 @@ def businesshours(H, ranges):
 
     return result
 
+def all_open(H):
+    """
+    return true if the H contains only opening events.
+    """
+
+    openings = [e[1] == 'open' for e in H]
+    result = all(openings)
+    return result
+
 def restaurant_opening(H):
     """
     return a string of the form bool,bool,bool that represents weither the
@@ -276,6 +285,12 @@ def restaurant_opening(H):
     """
 
     if len(H) == 0:
+        return [False,False,False]
+
+    # opening hours that only state that the shop open leads to unreliable
+    # results. This is because the shop never close ! so will be available
+    # all the time.
+    if all_open(H):
         return [False,False,False]
 
     ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
