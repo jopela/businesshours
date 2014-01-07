@@ -18,14 +18,21 @@ WEEKDAY_TO_NUM = {
                  }
 
 def main():
-
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+            'hours',
+            help='the opening hours string. The linker app thing requires'\
+                    'them to be formatted like this: [ ["mon_1_open","09:00"]'\
+                    ' ... ].'
+            )
+
     parser.add_argument(
             '-t',
             '--test',
             help='run the doctest suite and exit(0).',
             action='store_true'
             )
+
 
     args = parser.parse_args()
 
@@ -34,6 +41,13 @@ def main():
         doctest.testmod()
         exit(0)
 
+    # NOTE: user input are trusted here. This would be a no go usually
+    # but the only user are trusted.
+    hours = eval(args.hours)
+    print(hours)
+
+    result = restaurant_opening(hours)
+    print(result)
     return
 
 def periodize(events, P = timedelta(days=7)):
@@ -163,12 +177,11 @@ def opened_range(H,d1,d2):
     False
 
     """
-
     prior = immediately_prior(H,d1)
     events_in = event_between(H, d1, d2)
     close_events_in = [e for e in events_in if e[1] == 'close']
 
-    result = prior[1] == 'open' and len(close_events_in) == 0
+    result = (prior[1] == 'open') and (len(close_events_in) == 0)
     return result
 
 def hourmin(hour_s):
@@ -240,13 +253,12 @@ def businesshours(H, ranges):
     >>> businesshours(H,ranges)
     [False, True, True]
 
-
-
     """
-
     # Convert H into something I can work with
     transformed = [transform(e) for e in H]
+    print("transformed:",transformed)
     full_period = periodize(transformed)
+    print("full_reriod:",full_period)
 
     result = []
     for r in ranges:
@@ -254,6 +266,16 @@ def businesshours(H, ranges):
         openings = [opened_range(full_period,d1,d2) for d1,d2 in daily_ranges]
         result.append(any(openings))
 
+    return result
+
+def restaurant_opening(H):
+    """
+    return a string of the form bool,bool,bool that represents weither the
+    commerce with openings hours H offers breakfast, dinner and supper.
+    """
+
+    ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
+    result = businesshours(H,ranges)
     return result
 
 if __name__ == '__main__':
