@@ -33,7 +33,6 @@ def main():
             action='store_true'
             )
 
-
     args = parser.parse_args()
 
     if args.test:
@@ -44,8 +43,6 @@ def main():
     # NOTE: user input are trusted here. This would be a no go usually
     # but the only user are trusted.
     hours = eval(args.hours)
-    print(hours)
-
     result = restaurant_opening(hours)
     print(result)
     return
@@ -153,7 +150,6 @@ def event_between(H, d1, d2):
     result = [e for e in H if e[0] >= d1 and e[0] < d2]
     return result
 
-
 def opened_range(H,d1,d2):
     """
     return true if, for the given list of event H, there is a continuous
@@ -256,9 +252,7 @@ def businesshours(H, ranges):
     """
     # Convert H into something I can work with
     transformed = [transform(e) for e in H]
-    print("transformed:",transformed)
     full_period = periodize(transformed)
-    print("full_reriod:",full_period)
 
     result = []
     for r in ranges:
@@ -272,7 +266,16 @@ def restaurant_opening(H):
     """
     return a string of the form bool,bool,bool that represents weither the
     commerce with openings hours H offers breakfast, dinner and supper.
+
+    EXAMPLE
+    =======
+    # should not flip out when empty list is given.
+    >>> restaurant_opening([])
+    [False, False, False]
     """
+
+    if len(H) == 0:
+        return [False,False,False]
 
     ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
     result = businesshours(H,ranges)
