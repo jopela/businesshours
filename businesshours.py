@@ -282,6 +282,11 @@ def restaurant_opening(H):
     # should not flip out when empty list is given.
     >>> restaurant_opening([])
     [False, False, False]
+
+    # should .
+    >>> H = [["mon_1_open", "11:00"], ["mon_1_close", "00:00"], ["tue_1_open", "11:00"], ["tue_1_close", "00:00"], ["wed_1_open", "11:00"], ["wed_1_close", "00:00"], ["thu_1_open", "11:00"], ["thu_1_close", "00:00"], ["fri_1_open", "11:00"], ["fri_1_close", "00:00"], ["sat_1_open", "11:00"], ["sat_1_close", "00:00"], ["sun_1_open", "11:00"], ["sun_1_close", "00:00"]]
+    >>> restaurant_opening(H)
+    [False, True, True]
     """
 
     if len(H) == 0:
@@ -293,8 +298,16 @@ def restaurant_opening(H):
     if all_open(H):
         return [False,False,False]
 
-    ranges = [("09:00","10:00"),("11:30","12:30"),("17:00","18:00")]
-    result = businesshours(H,ranges)
+    breakfast_ranges = [("08:30","09:00"),("09:00","10:00")]
+    dinner_ranges = [("11:30","12:30"),("13:15","14:15")]
+    supper_ranges = [("17:00","18:00"), ("18:00","19:00"), ("19:00","20:00"),
+                     ("20:00","21:00")]
+
+    breakfast_opened = any(businesshours(H, breakfast_ranges))
+    dinner_opened = any(businesshours(H, dinner_ranges))
+    supper_opened = any(businesshours(H, supper_ranges))
+
+    result = [breakfast_opened,dinner_opened,supper_opened]
     return result
 
 if __name__ == '__main__':
