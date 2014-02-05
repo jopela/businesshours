@@ -40,9 +40,11 @@ def main():
         doctest.testmod()
         exit(0)
 
+
     # NOTE: user input are trusted here. This would be a no go usually
     # but the only user are trusted.
-    hours = eval(args.hours)
+    #hours = eval(args.hours)
+    hours = [["thu_1_open", "12:00"], ["thu_1_close", "14:00"], ["fri_1_open", "12:00"], ["fri_1_close", "14:00"], ["thu_2_open", "19:00"], ["thu_2_close", "22:00"], ["fri_2_open", "19:00"], ["fri_2_close", "22:00"]]
     result = restaurant_opening(hours)
     result_s = repr(result).lower()
     print(result_s)
@@ -89,6 +91,11 @@ def transform(elem):
     >>> transform(["mon_1_open", "09:00"])
     (datetime.datetime(2000, 1, 15, 9, 0), 'open')
 
+    >>> transform(["tue_1_close", "09:00"])
+    (datetime.datetime(2000, 1, 16, 9, 0), 'close')
+
+    >>> transform(["tue_2_close", "09:00"])
+    (datetime.datetime(2000, 1, 16, 9, 0), 'close')
     """
 
     event = elem[0]
@@ -250,6 +257,9 @@ def businesshours(H, ranges):
     >>> businesshours(H,ranges)
     [False, True, True]
 
+    #
+
+
     """
     # Convert H into something I can work with
     transformed = [transform(e) for e in H]
@@ -283,10 +293,14 @@ def restaurant_opening(H):
     >>> restaurant_opening([])
     [False, False, False]
 
-    # should .
     >>> H = [["mon_1_open", "11:00"], ["mon_1_close", "00:00"], ["tue_1_open", "11:00"], ["tue_1_close", "00:00"], ["wed_1_open", "11:00"], ["wed_1_close", "00:00"], ["thu_1_open", "11:00"], ["thu_1_close", "00:00"], ["fri_1_open", "11:00"], ["fri_1_close", "00:00"], ["sat_1_open", "11:00"], ["sat_1_close", "00:00"], ["sun_1_open", "11:00"], ["sun_1_close", "00:00"]]
     >>> restaurant_opening(H)
     [False, True, True]
+
+    >>> H = [["tue_1_open", "12:00"], ["tue_1_close", "23:00"], ["wed_1_open", "12:00"], ["wed_1_close", "23:00"], ["thu_1_open", "12:00"], ["thu_1_close", "23:00"], ["fri_1_open", "12:00"], ["fri_1_close", "23:00"], ["sat_1_open", "20:00"], ["sat_1_close", "23:00"]]
+    >>> restaurant_opening(H)
+    [False, True, True]
+
     """
 
     if len(H) == 0:
