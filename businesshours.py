@@ -43,8 +43,7 @@ def main():
 
     # NOTE: user input are trusted here. This would be a no go usually
     # but the only user are trusted.
-    #hours = eval(args.hours)
-    hours = [["thu_1_open", "12:00"], ["thu_1_close", "14:00"], ["fri_1_open", "12:00"], ["fri_1_close", "14:00"], ["thu_2_open", "19:00"], ["thu_2_close", "22:00"], ["fri_2_open", "19:00"], ["fri_2_close", "22:00"]]
+    hours = eval(args.hours)
     result = restaurant_opening(hours)
     result_s = repr(result).lower()
     print(result_s)
@@ -284,7 +283,7 @@ def all_open(H):
 
 def restaurant_opening(H):
     """
-    return a string of the form bool,bool,bool that represents weither the
+    Return a string of the form bool,bool,bool that represents weither the
     commerce with openings hours H offers breakfast, dinner and supper.
 
     EXAMPLE
@@ -313,7 +312,7 @@ def restaurant_opening(H):
         return [False,False,False]
 
     breakfast_ranges = [("08:30","09:00"),("09:00","10:00")]
-    dinner_ranges = [("11:30","12:30"),("13:15","14:15")]
+    dinner_ranges = [("11:30","11:45"),("11:45","12:00"),("12:15","12:30"),("12:30","12:45"),("12:45","13:00"),("13:15","14:15")]
     supper_ranges = [("17:00","18:00"), ("18:00","19:00"), ("19:00","20:00"),
                      ("20:00","21:00")]
 
