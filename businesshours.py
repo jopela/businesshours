@@ -41,10 +41,14 @@ def main():
         exit(0)
 
 
-    # NOTE: user input are trusted here. This would be a no go usually
-    # but the only user are trusted.
+    # NOTE: user input are trusted here.
     hours = eval(args.hours)
-    result = restaurant_opening(hours)
+    result =  [False,False,False]
+    try:
+        result = restaurant_opening(hours)
+    except:
+        pass
+
     result_s = repr(result).lower()
     print(result_s)
     return
