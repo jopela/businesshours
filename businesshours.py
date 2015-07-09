@@ -285,6 +285,17 @@ def all_open(H):
     result = all(openings)
     return result
 
+def before_midnight(H):
+    """ change the closing hour of 00:00 to 23:59  """
+    new_H = []
+    for e,h in H:
+        if e.endswith('close') and h == '00:00':
+            new_H.append([e,"23:59"])
+        else:
+            new_H.append([e,h])
+
+    return new_H
+
 def restaurant_opening(H):
     """
     Return a string of the form bool,bool,bool that represents weither the
@@ -304,6 +315,9 @@ def restaurant_opening(H):
     >>> restaurant_opening(H)
     [False, True, True]
 
+    >>> H = [["tue_1_open", "20:00"], ["tue_1_close", "00:00"], ["wed_1_open", "20:00"], ["wed_1_close", "00:00"], ["thu_1_open", "20:00"], ["thu_1_close", "00:00"], ["fri_1_open", "20:00"], ["fri_1_close", "00:00"], ["sat_1_open", "20:00"], ["sat_1_close", "00:00"], ["sun_1_open", "20:00"], ["sun_1_close", "00:00"]]
+    >>> restaurant_opening(H)
+    [False, False, True]
     """
 
     if len(H) == 0:
@@ -314,6 +328,9 @@ def restaurant_opening(H):
     # all the time.
     if all_open(H):
         return [False,False,False]
+
+    # hacky
+    H = before_midnight(H)
 
     breakfast_ranges = [("08:30","09:00"),("09:00","09:30"),("09:30","10:00"),("10:00","10:30")]
     dinner_ranges = [("11:30","11:45"),("11:45","12:00"),("12:15","12:30"),("12:30","12:45"),("12:45","13:00"),("13:15","14:15")]
