@@ -262,7 +262,6 @@ def businesshours(H, ranges):
 
     #
 
-
     """
     # Convert H into something I can work with
     transformed = [transform(e) for e in H]
@@ -286,10 +285,10 @@ def all_open(H):
     return result
 
 def before_midnight(H):
-    """ change the closing hour of 00:00 to 23:59  """
+    """ change the closing hour of 00:00 to 05:00 to 23:59  """
     new_H = []
     for e,h in H:
-        if e.endswith('close') and h == '00:00':
+        if e.endswith('close') and (h.startswith('00') or h.startswith('01') or h.startswith('02') or h.startswith('03') or h.startswith('04') or h.startswith('05') or h.startswith('06')):
             new_H.append([e,"23:59"])
         else:
             new_H.append([e,h])
@@ -318,6 +317,11 @@ def restaurant_opening(H):
     >>> H = [["tue_1_open", "20:00"], ["tue_1_close", "00:00"], ["wed_1_open", "20:00"], ["wed_1_close", "00:00"], ["thu_1_open", "20:00"], ["thu_1_close", "00:00"], ["fri_1_open", "20:00"], ["fri_1_close", "00:00"], ["sat_1_open", "20:00"], ["sat_1_close", "00:00"], ["sun_1_open", "20:00"], ["sun_1_close", "00:00"]]
     >>> restaurant_opening(H)
     [False, False, True]
+
+    >>> H = [["mon_1_open", "11:00"], ["mon_1_close", "23:30"], ["tue_1_open", "11:00"], ["tue_1_close", "17:00"], ["wed_1_open", "11:00"], ["wed_1_close", "23:30"], ["thu_1_open", "11:00"], ["thu_1_close", "23:30"], ["fri_1_open", "11:00"], ["fri_1_close", "00:30"], ["sat_1_open", "11:00"], ["sat_1_close", "00:30"], ["sun_1_open", "11:00"], ["sun_1_close", "23:30"]]
+    >>> restaurant_opening(H)
+    [False, True, True]
+
     """
 
     if len(H) == 0:
@@ -329,7 +333,7 @@ def restaurant_opening(H):
     if all_open(H):
         return [False,False,False]
 
-    # hacky
+    # hack
     H = before_midnight(H)
 
     breakfast_ranges = [("08:30","09:00"),("09:00","09:30"),("09:30","10:00"),("10:00","10:30")]
